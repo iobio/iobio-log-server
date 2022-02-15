@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net"
 	"net/http"
@@ -18,6 +19,9 @@ type IobioReq struct {
 }
 
 func main() {
+
+	domain := flag.String("domain", "log.iobio.io", "Domain")
+	flag.Parse()
 
 	http.HandleFunc("/eGJvfRfF300fGpxnB52LmFpD9IIJPzYb", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
@@ -46,7 +50,7 @@ func main() {
 		fmt.Println(fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%d", timestamp, remoteIp, iobioReq.RequestId, iobioReq.Type, iobioReq.Endpoint, iobioReq.NumAttempts))
 	})
 
-	err := certmagic.HTTPS([]string{"logs.anderspitman.net"}, nil)
+	err := certmagic.HTTPS([]string{*domain}, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
