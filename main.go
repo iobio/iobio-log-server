@@ -3,12 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
+	"time"
 
 	"github.com/caddyserver/certmagic"
 )
 
 type IobioReq struct {
+	RequestId   string `json:"requestId"`
 	Type        string `json:"type"`
 	NumAttempts int    `json:"numAttempts"`
 	Endpoint    string `json:"endpoint"`
@@ -32,7 +35,15 @@ func main() {
 			return
 		}
 
-		fmt.Println(iobioReq)
+		timestamp := time.Now().Format(time.RFC3339)
+		remoteIp, _, err := net.SplitHostPort(r.RemoteAddr)
+		if err != nil {
+			w.WriteHeader(500)
+			fmt.Fprintf(w, err.Error())
+			return
+		}
+
+		fmt.Println(fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%d", timestamp, remoteIp, iobioReq.RequestId, iobioReq.Type, iobioReq.Endpoint, iobioReq.NumAttempts))
 	})
 
 	err := certmagic.HTTPS([]string{"logs.anderspitman.net"}, nil)
