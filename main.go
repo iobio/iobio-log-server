@@ -21,7 +21,10 @@ type IobioReq struct {
 func main() {
 
 	domain := flag.String("domain", "log.iobio.io", "Domain")
+	acmeEmail := flag.String("acme-email", "", "ACME Email")
 	flag.Parse()
+
+	certmagic.DefaultACME.Email = *acmeEmail
 
 	http.HandleFunc("/eGJvfRfF300fGpxnB52LmFpD9IIJPzYb", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
