@@ -7,8 +7,6 @@ import (
 	"net"
 	"net/http"
 	"time"
-
-	"github.com/caddyserver/certmagic"
 )
 
 type IobioReq struct {
@@ -20,11 +18,8 @@ type IobioReq struct {
 
 func main() {
 
-	domain := flag.String("domain", "log.iobio.io", "Domain")
-	acmeEmail := flag.String("acme-email", "", "ACME Email")
+	port := flag.Int("port", 9001, "Port")
 	flag.Parse()
-
-	certmagic.DefaultACME.Email = *acmeEmail
 
 	http.HandleFunc("/eGJvfRfF300fGpxnB52LmFpD9IIJPzYb", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
@@ -53,7 +48,7 @@ func main() {
 		fmt.Println(fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%d", timestamp, remoteIp, iobioReq.RequestId, iobioReq.Type, iobioReq.Endpoint, iobioReq.NumAttempts))
 	})
 
-	err := certmagic.HTTPS([]string{*domain}, nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
