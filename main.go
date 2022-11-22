@@ -22,6 +22,12 @@ func main() {
 	flag.Parse()
 
 	http.HandleFunc("/eGJvfRfF300fGpxnB52LmFpD9IIJPzYb", func(w http.ResponseWriter, r *http.Request) {
+
+                headers := w.Header()
+
+                headers["Access-Control-Allow-Origin"] = []string{"*"}
+                headers["Access-Control-Allow-Methods"] = []string{"POST, OPTIONS"}
+
 		if r.Method != "POST" {
 			w.WriteHeader(405)
 			fmt.Fprintf(w, "Invalid HTTP method")
